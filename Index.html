@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Toffatales — Clothing Store</title>
+<style>
+  :root{
+    --brand:#d7003a;
+    --muted:#666;
+    --bg:#ffffff;
+    --card:#fafafa;
+    --radius:12px;
+    --max-w:1100px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:Inter, Arial, sans-serif;
+    background:var(--bg); color:#111;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .wrap{max-width:var(--max-w); margin:0 auto; padding:14px;}
+
+  header.site{
+    display:flex; gap:12px; align-items:center;
+    position:sticky; top:0; background:#fff;
+    z-index:30; padding:10px 14px; border-bottom:1px solid #eee;
+  }
+  .logo{font-weight:700; color:#222; font-size:18px}
+
+  .search{
+    flex:1; display:flex; align-items:center; gap:8px;
+    background:#f4f4f6; padding:8px 10px; border-radius:999px;
+  }
+  .search input{border:0; outline:0; background:transparent; width:100%; font-size:14px}
+
+  .icons{display:flex; gap:8px; align-items:center}
+  .icon-btn{width:36px;height:36px;border-radius:8px;display:grid;place-items:center;cursor:pointer}
+
+  .hero{display:flex; gap:12px; margin-top:14px; align-items:center}
+  .hero-left{flex:1}
+  .hero h1{margin:0; font-size:20px}
+  .hero p{margin:6px 0 0;color:var(--muted); font-size:13px}
+
+  .banner{
+    min-height:120px; border-radius:14px; overflow:hidden;
+    background:linear-gradient(135deg,var(--brand), #ff6f91); color:#fff;
+    padding:14px; display:flex; align-items:center; justify-content:center;
+  }
+
+  .cats{display:flex; gap:10px; margin:14px 0; overflow:auto; padding-bottom:6px}
+  .cat{flex:0 0 auto; background:#fff; border:1px solid #f0f0f0; padding:8px 12px; border-radius:999px; font-size:13px; cursor:pointer}
+
+  .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:10px}
+  @media(min-width:700px){
+    .grid{grid-template-columns:repeat(3,1fr)}
+  }
+
+  .card{
+    background:var(--card); border-radius:12px; padding:10px;
+    box-shadow:0 6px 16px rgba(0,0,0,0.04); position:relative; overflow:hidden;
+  }
+  .badge{
+    position:absolute; top:10px; left:10px;
+    background:var(--brand); color:#fff; padding:4px 8px;
+    border-radius:6px; font-size:12px; font-weight:700;
+  }
+  .card img{
+    width:100%; height:160px; object-fit:cover; border-radius:10px;
+  }
+
+  .title{margin:8px 0 2px; font-size:14px; font-weight:600}
+
+  .price-row{
+    display:flex; justify-content:space-between; align-items:center; margin-top:6px
+  }
+  .price{font-weight:700; color:#111}
+  .muted{color:var(--muted); font-size:13px}
+
+  footer{
+    padding:20px 0; color:var(--muted);
+    font-size:13px; text-align:center;
+  }
+
+  a{color:var(--brand); text-decoration:none}
+
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="logo">Toffatales</div>
+
+  <div class="search">
+    <input id="searchBox" placeholder="Search clothes, shirts, jeans..." />
+  </div>
+
+  <div class="icons">
+    <div class="icon-btn" title="Cart" id="openCart">🛒</div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <div class="hero-left">
+      <h1>Discover Your Style</h1>
+      <p>Premium fashion curated specially for you.</p>
+    </div>
+
+    <div class="banner" style="min-width:45%; max-width:45%">
+      <div>
+        <div style="font-size:18px; font-weight:800">Flat 40% OFF</div>
+        <div style="margin-top:6px">On first order • Limited time</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cats" id="cats">
+    <div class="cat" data-cat="all">All</div>
+    <div class="cat" data-cat="men">Men</div>
+    <div class="cat" data-cat="women">Women</div>
+    <div class="cat" data-cat="kids">Kids</div>
+    <div class="cat" data-cat="tops">Tops</div>
+    <div class="cat" data-cat="bottoms">Bottoms</div>
+  </div>
+
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px">
+    <h3 style="margin:0">Trending</h3>
+    <a href="#" id="seeAll">See all</a>
+  </div>
+
+  <div class="grid" id="productGrid"></div>
+
+  <footer>
+    © <span id="year"></span> Toffatales — Built with ❤️
+  </footer>
+
+</main>
+
+<script>
+// dynamic year
+document.getElementById('year').textContent = new Date().getFullYear();
+
+// products
+const PRODUCTS = [
+  {id:1,name:"Men's Casual Shirt",price:799,cat:"men",img:"https://picsum.photos/seed/shirt1/800/600"},
+  {id:2,name:"Women's Floral Top",price:599,cat:"women",img:"https://picsum.photos/seed/top2/800/600"},
+  {id:3,name:"Blue Denim Jeans",price:1299,cat:"bottoms",img:"https://picsum.photos/seed/jeans3/800/600"},
+  {id:4,name:"Kids T-Shirt Pack",price:499,cat:"kids",img:"https://picsum.photos/seed/kids4/800/600"},
+  {id:5,name:"Men's Jacket",price:1999,cat:"men",img:"https://picsum.photos/seed/jacket5/800/600"},
+  {id:6,name:"Women's Maxi Dress",price:1599,cat:"women",img:"https://picsum.photos/seed/dress6/800/600"}
+];
+
+const productGrid = document.getElementById('productGrid');
+const searchBox = document.getElementById('searchBox');
+const cats = document.getElementById('cats');
+
+let filter = "all";
+let search = "";
+
+// render products
+function renderProducts(){
+  let list = PRODUCTS.filter(p => 
+    (filter === "all" || p.cat === filter) &&
+    p.name.toLowerCase().includes(search.toLowerCase())
+  );
+
+  productGrid.innerHTML = "";
+
+  if(list.length === 0){
+    productGrid.innerHTML =
+      `<div style='grid-column:1/-1;text-align:center;color:#666'>No products found</div>`;
+    return;
+  }
+
+  list.forEach(p=>{
+    productGrid.innerHTML += `
+      <div class="card">
+        <div class="badge">-${Math.floor(Math.random()*30+20)}%</div>
+        <img src="${p.img}" />
+        <div class="title">${p.name}</div>
+        <div class="price-row">
+          <div class="price">₹${p.price}</div>
+          <div class="muted">Free shipping</div>
+        </div>
+      </div>
+    `;
+  });
+}
+
+searchBox.oninput = () => {
+  search = searchBox.value;
+  renderProducts();
+}
+
+cats.onclick = e => {
+  if(e.target.dataset.cat){
+    filter = e.target.dataset.cat;
+    renderProducts();
+  }
+}
+
+renderProducts();
+</script>
+
+</body>
+</html>
